@@ -1,0 +1,16 @@
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Stubs generados
+src/main/java/ec/edu/grupo3/client/generated/
+
+# Logs
+*.log
+
+# OS
+.DS_Store

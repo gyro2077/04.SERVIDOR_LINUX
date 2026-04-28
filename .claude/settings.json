@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl -s \"http://localhost:8080/04.SERVIDOR/\")"
+      "Bash(curl -s \"http://localhost:8080/04.SERVIDOR/\")",
+      "Bash(curl -s \"http://localhost:8080/04.SERVIDOR/conversion?wsdl\")",
+      "Bash(chmod +x clients/console-client/build.sh)",
+      "Bash(chmod +x clients/desktop-client/build.sh)",
+      "Bash(java -jar /home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/target/conversion-console-client.jar)"
     ]
   }
 }

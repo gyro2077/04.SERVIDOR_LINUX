@@ -1,0 +1,163 @@
+/* Estilos para el Cliente Desktop de Conversión de Unidades */
+
+/* Estilo general */
+.root {
+    -fx-font-family: "System", "Arial", sans-serif;
+    -fx-background-color: #FAFAFA;
+}
+
+/* Estilo de las pestañas */
+.tab-pane {
+    -fx-tab-min-height: 30px;
+}
+
+.tab {
+    -fx-background-color: #E0E0E0;
+    -fx-background-insets: 0;
+}
+
+.tab:selected {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 0 0 2 0;
+}
+
+.tab-label {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #2196F3;
+    -fx-font-weight: bold;
+}
+
+/* Estilo de los campos de texto */
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+}
+
+/* Estilo de los ComboBox */
+.combo-box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 5px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+/* Estilo de los botones */
+.button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.button:pressed {
+    -fx-background-color: #0D47A1;
+}
+
+.button:disabled {
+    -fx-background-color: #BDBDBD;
+    -fx-opacity: 0.7;
+}
+
+/* Estilo de las etiquetas */
+.label {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+/* Estilo de la barra de progreso */
+.progress-bar {
+    -fx-accent: #2196F3;
+}
+
+.progress-bar .track {
+    -fx-background-color: #E0E0E0;
+    -fx-background-radius: 4px;
+}
+
+.progress-bar .bar {
+    -fx-background-insets: 0;
+    -fx-background-radius: 4px;
+}
+
+/* Estilo de los separadores */
+.separator {
+    -fx-padding: 0 10 0 10;
+}
+
+.separator .line {
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Estilo de los paneles */
+.vbox {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+/* Estilo de los mensajes de error */
+.error-label {
+    -fx-text-fill: #C62828;
+    -fx-font-weight: bold;
+}
+
+/* Estilo de los mensajes de éxito */
+.success-label {
+    -fx-text-fill: #2E7D32;
+    -fx-font-weight: bold;
+}
+
+/* Estilo de los tooltips */
+.tooltip {
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 4px;
+}
+
+/* Animaciones */
+.button {
+    -fx-transition: all 0.3s ease;
+}
+
+.text-field {
+    -fx-transition: border-color 0.3s ease;
+}
+
+.combo-box {
+    -fx-transition: border-color 0.3s ease;
+}
