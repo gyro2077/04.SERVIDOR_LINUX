@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <ns2:convertLength xmlns:ns2="http://ws.grupo3.edu.ec/">
+      <value>100.0</value>
+      <fromUnit>CENTIMETER</fromUnit>
+      <toUnit>METER</toUnit>
+    </ns2:convertLength>
+  </soap:Body>
+</soap:Envelope>

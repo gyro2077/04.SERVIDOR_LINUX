@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <ns2:convertMass xmlns:ns2="http://ws.grupo3.edu.ec/">
+      <value>5.0</value>
+      <fromUnit>KILOGRAM</fromUnit>
+      <toUnit>POUND</toUnit>
+    </ns2:convertMass>
+  </soap:Body>
+</soap:Envelope>
