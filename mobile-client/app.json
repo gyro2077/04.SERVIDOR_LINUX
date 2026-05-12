@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "mobile-client",
+    "slug": "mobile-client",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "mobile-client",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#00a8ff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.grupo3.mobileclient"
+    },
+    "android": {
+      "package": "com.grupo3.mobileclient"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

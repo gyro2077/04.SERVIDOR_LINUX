@@ -1,0 +1,152 @@
+@model web_client.Models.ConversionViewModel
+
+@{
+    ViewData["Title"] = "Conversor SOAP Web";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 text-white">
+                            <i class="bi bi-arrow-left-right me-2"></i>Conversor Universal SOAP
+                        </h4>
+                        <a asp-controller="Conversion" asp-action="Configure" class="btn btn-light btn-sm">
+                            <i class="bi bi-gear"></i> Configurar
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body bg-light p-4">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show text-center py-3" role="alert" style="font-size: 1.15rem;">
+                            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Index" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label asp-for="Category" class="form-label fw-bold">
+                                <i class="bi bi-grid-3x3-gap me-1"></i>Categoria
+                            </label>
+                            <select asp-for="Category" 
+                                    asp-items="Model.Categories" 
+                                    class="form-select form-select-lg" 
+                                    id="cmbCategory"
+                                    onchange="updateUnits()">
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-5">
+                                <label asp-for="FromUnit" class="form-label fw-bold">
+                                    <i class="bi bi-box-seam me-1"></i>De (Origen)
+                                </label>
+                                <select asp-for="FromUnit" class="form-select" id="cmbFrom"></select>
+                                <span asp-validation-for="FromUnit" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+                                    <i class="bi bi-arrow-right-circle-fill text-primary" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label asp-for="ToUnit" class="form-label fw-bold">
+                                    <i class="bi bi-box-seam me-1"></i>A (Destino)
+                                </label>
+                                <select asp-for="ToUnit" class="form-select" id="cmbTo"></select>
+                                <span asp-validation-for="ToUnit" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="InputValue" class="form-label fw-bold">
+                                <i class="bi bi-numeric me-1"></i>Valor a Convertir
+                            </label>
+                            <input asp-for="InputValue" 
+                                   class="form-control form-control-lg" 
+                                   type="number" 
+                                   step="any" 
+                                   min="0"
+                                   placeholder="Ej: 100.5" />
+                            <span asp-validation-for="InputValue" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="bi bi-arrow-left-right me-2"></i>Realizar Conversion
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-muted py-3">
+                    <div class="row">
+                        <div class="col text-center">
+                            <small>Cliente Web ASP.NET Core MVC</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const units = {
+            "Mass": ["KILOGRAM", "GRAM", "POUND", "OUNCE"],
+            "Length": ["METER", "KILOMETER", "CENTIMETER", "MILE", "YARD", "FOOT", "INCH"],
+            "Temperature": ["CELSIUS", "FAHRENHEIT", "KELVIN"]
+        };
+
+        function updateUnits() {
+            const category = document.getElementById("cmbCategory").value;
+            const fromSelect = document.getElementById("cmbFrom");
+            const toSelect = document.getElementById("cmbTo");
+            
+            fromSelect.innerHTML = "";
+            toSelect.innerHTML = "";
+
+            if (units[category]) {
+                units[category].forEach(u => {
+                    fromSelect.add(new Option(u, u));
+                    toSelect.add(new Option(u, u));
+                });
+                
+                if (toSelect.options.length > 1) {
+                    toSelect.selectedIndex = 1;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUnits();
+        });
+    </script>
+}

@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "dgSpecHash": "r1ixJihE1U8=",
+  "success": true,
+  "projectFilePath": "/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-wcf/ConversionApp/ConversionApp.csproj",
+  "expectedPackageFiles": [
+    "/home/gyro/.nuget/packages/corewcf.http/1.7.0/corewcf.http.1.7.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/corewcf.primitives/1.7.0/corewcf.primitives.1.7.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.abstractions/8.3.0/microsoft.identitymodel.abstractions.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.logging/8.3.0/microsoft.identitymodel.logging.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.protocols/8.3.0/microsoft.identitymodel.protocols.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.protocols.wsfederation/8.3.0/microsoft.identitymodel.protocols.wsfederation.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.tokens/8.3.0/microsoft.identitymodel.tokens.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.tokens.saml/8.3.0/microsoft.identitymodel.tokens.saml.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/microsoft.identitymodel.xml/8.3.0/microsoft.identitymodel.xml.8.3.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/system.directoryservices/8.0.0/system.directoryservices.8.0.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/system.directoryservices.protocols/8.0.0/system.directoryservices.protocols.8.0.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/system.security.cryptography.protecteddata/8.0.0/system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",
+    "/home/gyro/.nuget/packages/system.web.services.description/8.1.1/system.web.services.description.8.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}

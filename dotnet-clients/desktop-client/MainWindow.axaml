@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="400"
+        x:Class="desktop_client.MainWindow"
+        Title="SOAP Conversion Client"
+        Width="550"
+        Height="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F6FA">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Conversor Universal SOAP"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,5"/>
+        <TextBlock Text="Cliente de Escritorio"
+                   FontSize="12"
+                   Foreground="#636E72"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <Grid ColumnDefinitions="Auto,*">
+            <TextBlock Text="Categoria:" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,15,0"
+                       FontWeight="Bold"/>
+            <ComboBox x:Name="CmbCategory" 
+                      Grid.Column="1"
+                      MaxWidth="200"
+                      HorizontalAlignment="Left">
+                <ComboBoxItem Content="Masa" Tag="Mass" IsSelected="True"/>
+                <ComboBoxItem Content="Longitud" Tag="Length"/>
+                <ComboBoxItem Content="Temperatura" Tag="Temperature"/>
+            </ComboBox>
+        </Grid>
+
+        <Border Background="White"
+                BorderBrush="#DFE6E9"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20"
+                Margin="0,20">
+            <Grid ColumnDefinitions="*,Auto,*">
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="De (Origen):" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="CmbFromUnit" Margin="0,0,0,15" MaxWidth="150"/>
+                    <TextBlock Text="Valor:" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="TxtValue" Watermark="0" MaxWidth="150"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Text="->" FontSize="28" VerticalAlignment="Center" Foreground="#00A8FF" Margin="20,0"/>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="A (Destino):" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="CmbToUnit" Margin="0,0,0,15" MaxWidth="150"/>
+                    <TextBlock Text="Resultado:" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="TxtResult" IsReadOnly="True" Watermark="0" FontWeight="Bold" Foreground="#00B894" MaxWidth="150"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Button x:Name="BtnConvert" 
+                Content="CONVERTIR" 
+                Width="180" 
+                Height="40"
+                HorizontalAlignment="Center"
+                Background="#00A8FF"
+                Foreground="White"
+                FontWeight="Bold"/>
+
+        <TextBlock x:Name="TxtStatus" 
+                   Text="Listo. Seleccione categoria e ingrese valor." 
+                   HorizontalAlignment="Center"
+                   Foreground="#636E72" 
+                   FontSize="12"
+                   Margin="0,20,0,0"/>
+    </StackPanel>
+</Window>
