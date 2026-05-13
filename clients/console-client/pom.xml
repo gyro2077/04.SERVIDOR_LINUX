@@ -97,7 +97,7 @@
                         <configuration>
                             <!-- URL del WSDL del servicio -->
                             <wsdlUrls>
-                                <wsdlUrl>http://localhost:8080/04.SERVIDOR/conversion?wsdl</wsdlUrl>
+                                <wsdlUrl>http://209.145.48.25:8081/ROOT/Conversion?wsdl</wsdlUrl>
                             </wsdlUrls>
                             <!-- Paquete donde se generarán las clases -->
                             <packageName>ec.edu.grupo3.client.generated</packageName>

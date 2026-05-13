@@ -95,7 +95,7 @@ public class ConversionController {
         void run() throws Exception;
     }
 
-    private void displayResult(javafx.scene.control.Label label, ec.edu.grupo3.client.generated.ConversionResponse response) {
+    private void displayResult(javafx.scene.control.Label label, ec.edu.grupo3.client.generated.ConversionResponseView response) {
         Platform.runLater(() -> {
             String text = String.format("%.4f %s = %.4f %s",
                 response.getInputValue(),

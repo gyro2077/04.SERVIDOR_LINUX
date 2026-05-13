@@ -4,14 +4,13 @@
 # Usa el plugin jaxws-maven-plugin de Maven para generar los stubs
 
 echo "🔧 Compilando cliente desktop..."
-echo "📍 WSDL: http://localhost:8080/04.SERVIDOR/conversion?wsdl"
+echo "📍 WSDL: http://209.145.48.25:8081/ROOT/Conversion?wsdl"
 echo ""
 
-# Verificar que el servidor esté corriendo
-if ! curl -s --head "http://localhost:8080/04.SERVIDOR/conversion?wsdl" 2>/dev/null | head -n 1 | grep "HTTP" > /dev/null; then
-    echo "❌ Error: El servidor SOAP no está disponible"
-    echo "   Asegúrate de que Payara esté corriendo:"
-    echo "   sudo systemctl start payara.service"
+# Verificar que el VPS esté disponible
+if ! curl -s --head "http://209.145.48.25:8081/ROOT/Conversion?wsdl" 2>/dev/null | head -n 1 | grep "HTTP" > /dev/null; then
+    echo "❌ Error: El servidor VPS no está disponible"
+    echo "   Asegúrate de que el servidor VPS esté corriendo"
     exit 1
 fi
 

@@ -30,7 +30,7 @@ src/main/java/ec/edu/grupo3/client/
 
 - Java 21
 - Maven 3.8+
-- Servidor Payara ejecutándose en `localhost:8080`
+- Servidor SOAP VPS ejecutándose en `http://209.145.48.25:8081/ROOT/Conversion`
 
 ## Credenciales de Acceso
 
@@ -97,11 +97,10 @@ El sistema muestra el resultado formateado:
 
 ## Solución de Problemas
 
-### Error: "El servidor SOAP no está disponible"
-Asegúrese de que Payara esté ejecutándose:
-```bash
-sudo systemctl start payara
-```
+### Error: "El servidor VPS no está disponible"
+Asegúrese de que el servidor SOAP esté ejecutándose en el VPS:
+- URL: `http://209.145.48.25:8081/ROOT/Conversion`
+- Verifique la conectividad: `curl http://209.145.48.25:8081/ROOT/Conversion?wsdl`
 
 ### Las flechas no funcionan
 El menú por flechas requiere una terminal real. Si usa un IDE, ejecute el JAR desde una terminal real (gnome-terminal, konsole, xterm).
@@ -118,12 +117,17 @@ mvn clean package -DskipTests -Djaxws.skip=true
 
 ## Configuración del WSDL
 
-El proyecto está configurado para conectar a:
+El proyecto está configurado para conectar al servidor VPS de producción:
 ```
-http://localhost:8080/04.SERVIDOR/conversion?wsdl
+http://209.145.48.25:8081/ROOT/Conversion?wsdl
 ```
 
 Para cambiar la URL del servidor, modifique el archivo `pom.xml` en la sección de configuración del plugin `jaxws-maven-plugin`.
+
+## Autenticación
+
+- Las credenciales (`MONSTER`/`MONSTER9`) se validan localmente
+- El token de seguridad se inyecta automáticamente para las peticiones SOAP
 
 ## Tecnologías Usadas
 
