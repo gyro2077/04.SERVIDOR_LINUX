@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="desktop_client.Views.MainWindow"
+        Title="SOAP Hub - Conversor Premium"
+        Width="600" Height="450"
+        WindowStartupLocation="CenterScreen"
+        Background="#0F172A">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="#334155" Padding="0,0,0,15">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="SOAP Hub" FontSize="22" FontWeight="ExtraBold" Foreground="#8B5CF6" VerticalAlignment="Center"/>
+                    <TextBlock Text="Conversor Universal" FontSize="14" Foreground="#94A3B8" VerticalAlignment="Center" Margin="5,4,0,0"/>
+                </StackPanel>
+                <TextBlock x:Name="TxtUserGreeting" Grid.Column="1" Foreground="#E2E8F0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="#1E293B" CornerRadius="12" Padding="25" Margin="0,20">
+            <StackPanel Spacing="20">
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Text="Categoría de Unidad:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#E2E8F0" Margin="0,0,15,0"/>
+                    <ComboBox x:Name="CmbCategory" Grid.Column="1" MaxWidth="220" Background="#334155" Foreground="White" BorderBrush="#6366F1">
+                        <ComboBoxItem Content="Masa" Tag="Mass" IsSelected="True"/>
+                        <ComboBoxItem Content="Longitud" Tag="Length"/>
+                        <ComboBoxItem Content="Temperatura" Tag="Temperature"/>
+                    </ComboBox>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto,*" Margin="0,10,0,0">
+                    <StackPanel Grid.Column="0" Spacing="8">
+                        <TextBlock Text="Convertir desde:" FontWeight="SemiBold" Foreground="#94A3B8" FontSize="13"/>
+                        <ComboBox x:Name="CmbFromUnit" HorizontalAlignment="Stretch" Background="#334155" Foreground="White" BorderBrush="#6366F1"/>
+                        <TextBlock Text="Valor numérico:" FontWeight="SemiBold" Foreground="#94A3B8" FontSize="13" Margin="0,5,0,0"/>
+                        <TextBox x:Name="TxtValue" PlaceholderText="0.0" Background="#334155" Foreground="White" BorderBrush="#6366F1" PlaceholderForeground="#94A3B8"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1" Text="→" FontSize="26" FontWeight="Bold" Foreground="#6366F1" VerticalAlignment="Center" Margin="20,0"/>
+
+                    <StackPanel Grid.Column="2" Spacing="8">
+                        <TextBlock Text="Hacia destino:" FontWeight="SemiBold" Foreground="#94A3B8" FontSize="13"/>
+                        <ComboBox x:Name="CmbToUnit" HorizontalAlignment="Stretch" Background="#334155" Foreground="White" BorderBrush="#6366F1"/>
+                        <TextBlock Text="Resultado devuelto:" FontWeight="SemiBold" Foreground="#94A3B8" FontSize="13" Margin="0,5,0,0"/>
+                        <TextBox x:Name="TxtResult" IsReadOnly="True" FontWeight="Bold" Foreground="#22C55E" Background="#334155" BorderBrush="#6366F1"/>
+                    </StackPanel>
+                </Grid>
+
+                <Button x:Name="BtnConvert" Content="PROCESAR CONVERSIÓN" Width="220" Height="42"
+                        HorizontalAlignment="Center" Background="#6366F1" Foreground="White"
+                        FontWeight="Bold" CornerRadius="8" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <TextBlock x:Name="TxtStatus" Grid.Row="2" Text="Listo para operar." HorizontalAlignment="Center" Foreground="#64748B" FontSize="12"/>
+    </Grid>
+</Window>

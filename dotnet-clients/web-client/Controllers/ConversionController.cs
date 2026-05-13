@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_client.Models;
 using web_client.Services;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace web_client.Controllers
 {
+    [Authorize]
     public class ConversionController : Controller
     {
         private readonly ISoapService _soapService;

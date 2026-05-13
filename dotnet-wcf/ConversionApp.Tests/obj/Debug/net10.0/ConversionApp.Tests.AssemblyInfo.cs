@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConversionApp.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe5b9a717de5e52a8e3d3fa213dfab94013703fe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4a158d5b9617f8280df7f46d5d5362ede42f9f7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConversionApp.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConversionApp.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

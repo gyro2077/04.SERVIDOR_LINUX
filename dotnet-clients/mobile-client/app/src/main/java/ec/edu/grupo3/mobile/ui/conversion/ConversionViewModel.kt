@@ -1,4 +1,4 @@
-package ec.edu.grupo3.mobile.ui
+package ec.edu.grupo3.mobile.ui.conversion
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,13 +19,7 @@ sealed class UiState {
 class ConversionViewModel : ViewModel() {
     private val repository = SoapRepository()
 
-    var selectedCategory by mutableStateOf("Mass")
-    var inputValue by mutableStateOf("")
-    var fromUnit by mutableStateOf("KILOGRAM")
-    var toUnit by mutableStateOf("POUND")
-
-    var uiState by mutableStateOf<UiState>(UiState.Idle)
-        private set
+    val categories = listOf("Mass" to "Masa", "Length" to "Longitud", "Temperature" to "Temperatura")
 
     private val unitsMap = mapOf(
         "Mass" to listOf("KILOGRAM", "GRAM", "POUND", "OUNCE"),
@@ -33,31 +27,50 @@ class ConversionViewModel : ViewModel() {
         "Temperature" to listOf("CELSIUS", "FAHRENHEIT", "KELVIN")
     )
 
-    fun getAvailableUnits(): List<String> = unitsMap[selectedCategory] ?: emptyList()
+    var selectedCategory by mutableStateOf("Mass")
+        private set
+
+    var availableUnits by mutableStateOf(unitsMap["Mass"] ?: emptyList())
+        private set
+
+    var fromUnit by mutableStateOf("KILOGRAM")
+        private set
+
+    var toUnit by mutableStateOf("POUND")
+        private set
+
+    var inputValue by mutableStateOf("")
+        private set
+
+    var uiState by mutableStateOf<UiState>(UiState.Idle)
+        private set
 
     fun onCategoryChange(newCategory: String) {
         selectedCategory = newCategory
-        val units = getAvailableUnits()
-        fromUnit = units.first()
-        toUnit = if (units.size > 1) units[1] else units.first()
+        availableUnits = unitsMap[newCategory] ?: emptyList()
+        fromUnit = availableUnits.firstOrNull() ?: ""
+        toUnit = if (availableUnits.size > 1) availableUnits[1] else availableUnits.firstOrNull() ?: ""
         uiState = UiState.Idle
     }
+
+    fun onFromUnitChange(unit: String) { fromUnit = unit }
+    fun onToUnitChange(unit: String) { toUnit = unit }
+    fun onInputValueChange(value: String) { inputValue = value }
 
     fun convert() {
         val valueDouble = inputValue.toDoubleOrNull()
         if (valueDouble == null) {
-            uiState = UiState.Error("Ingrese un número válido")
+            uiState = UiState.Error("Por favor, ingrese un número positivo válido.")
             return
         }
 
         uiState = UiState.Loading
         viewModelScope.launch {
             val result = repository.convert(selectedCategory, valueDouble, fromUnit, toUnit)
-            result.onSuccess { response ->
-                uiState = UiState.Success(response)
-            }.onFailure { error ->
-                uiState = UiState.Error(error.localizedMessage ?: "Error de red al conectar al SOAP")
-            }
+            uiState = result.fold(
+                onSuccess = { response -> UiState.Success(response) },
+                onFailure = { error -> UiState.Error(error.message ?: "Error de red al conectar al SOAP") }
+            )
         }
     }
 }

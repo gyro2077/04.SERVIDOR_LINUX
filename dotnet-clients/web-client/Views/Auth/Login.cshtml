@@ -1,0 +1,57 @@
+@model web_client.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="row justify-content-center align-items-center">
+    <div class="col-lg-5 col-md-7 col-sm-9">
+        <div class="glass-card p-5">
+            <div class="text-center mb-4">
+                <div class="d-inline-block p-3 mb-3" style="background: rgba(99, 102, 241, 0.1); border-radius: 50%;">
+                    <i class="bi bi-shield-lock-fill" style="font-size: 3rem; color: #a855f7;"></i>
+                </div>
+                <h3 class="fw-bold text-white">Acceso Seguro</h3>
+                <p class="text-muted small">Ingrese sus credenciales corporativas para continuar</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-radius: 0.75rem;" role="alert">
+                    <i class="bi bi-exclamation-octagon-fill me-2"></i>@Model.ErrorMessage
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <form asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-4">
+                    <label asp-for="Username" class="form-label text-light fw-semibold small">
+                        <i class="bi bi-person me-1"></i>Usuario
+                    </label>
+                    <input asp-for="Username" class="form-control form-control-lg form-control-custom" placeholder="Ej: MONSTER" autocomplete="off" autofocus />
+                    <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label text-light fw-semibold small">
+                        <i class="bi bi-key me-1"></i>Contraseña
+                    </label>
+                    <input asp-for="Password" class="form-control form-control-lg form-control-custom" placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <div class="d-grid mt-5">
+                    <button type="submit" class="btn btn-gradient btn-lg py-3 shadow">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar al Sistema
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

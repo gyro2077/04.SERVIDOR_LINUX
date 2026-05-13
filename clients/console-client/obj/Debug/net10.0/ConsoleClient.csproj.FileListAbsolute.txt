@@ -1,0 +1,15 @@
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/bin/Debug/net10.0/ConsoleClient
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/bin/Debug/net10.0/ConsoleClient.deps.json
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/bin/Debug/net10.0/ConsoleClient.runtimeconfig.json
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/bin/Debug/net10.0/ConsoleClient.dll
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/bin/Debug/net10.0/ConsoleClient.pdb
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.GeneratedMSBuildEditorConfig.editorconfig
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.AssemblyInfoInputs.cache
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.AssemblyInfo.cs
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.csproj.CoreCompileInputs.cache
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.sourcelink.json
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.dll
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/refint/ConsoleClient.dll
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.pdb
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ConsoleClient.genruntimeconfig.cache
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/clients/console-client/obj/Debug/net10.0/ref/ConsoleClient.dll

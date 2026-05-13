@@ -26,8 +26,11 @@ build_property.EnableCodeStyleSeverity =
 [/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/MainWindow.axaml]
+[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/LoginWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/SetupWindow.axaml]
+[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/SetupWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
