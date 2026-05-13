@@ -17,20 +17,17 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = desktop-client
-build_property.ProjectDir = /home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/
+build_property.ProjectDir = C:\Users\gyro\Desktop\Shared\Documents\ULTIMO_SEMESTRE\ARQUITECTURA\04.SERVIDOR\dotnet-clients\desktop-client\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/App.axaml]
+[C:/Users/gyro/Desktop/Shared/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/LoginWindow.axaml]
+[C:/Users/gyro/Desktop/Shared/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/LoginWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/MainWindow.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/SetupWindow.axaml]
+[C:/Users/gyro/Desktop/Shared/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/04.SERVIDOR/dotnet-clients/desktop-client/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
