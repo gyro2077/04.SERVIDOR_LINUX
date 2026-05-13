@@ -1,14 +1,22 @@
 using System;
 using System.Threading.Tasks;
+using ConsoleClient.Controllers;
+using ConsoleClient.Models;
 
 namespace ConsoleClient
 {
     public class MenuHandler
     {
-        private readonly ServiceInvoker _invoker = new ServiceInvoker();
+        private readonly ConversionController _controller;
+
         private readonly string[] _massUnits = { "KILOGRAM", "GRAM", "POUND", "OUNCE" };
         private readonly string[] _lengthUnits = { "METER", "KILOMETER", "CENTIMETER", "MILE", "YARD", "FOOT", "INCH" };
         private readonly string[] _tempUnits = { "CELSIUS", "FAHRENHEIT", "KELVIN" };
+
+        public MenuHandler(ConversionController controller)
+        {
+            _controller = controller;
+        }
 
         public async Task RunMainMenuAsync()
         {
@@ -16,8 +24,7 @@ namespace ConsoleClient
             {
                 PrintBanner();
                 Console.WriteLine();
-                Console.WriteLine("  Presione ENTER para seleccionar");
-                Console.WriteLine("  Use ↑↓ para navegar");
+                Console.WriteLine("  Use ↑↓ para navegar  |  ENTER para seleccionar");
 
                 int option = ConsoleHelper.ShowSelectionMenu(new[]
                 {
@@ -29,15 +36,9 @@ namespace ConsoleClient
 
                 switch (option)
                 {
-                    case 0:
-                        await ProcessMassConversionAsync();
-                        break;
-                    case 1:
-                        await ProcessLengthConversionAsync();
-                        break;
-                    case 2:
-                        await ProcessTemperatureConversionAsync();
-                        break;
+                    case 0: await ProcessAsync("Mass"); break;
+                    case 1: await ProcessAsync("Length"); break;
+                    case 2: await ProcessAsync("Temperature"); break;
                     case 3:
                     case -1:
                         PrintExitMessage();
@@ -46,146 +47,123 @@ namespace ConsoleClient
             }
         }
 
-        private async Task ProcessMassConversionAsync()
+        private async Task ProcessAsync(string category)
         {
-            PrintSubHeader("CONVERSION DE MASA");
+            string title = category switch
+            {
+                "Mass" => "CONVERSION DE MASA",
+                "Length" => "CONVERSION DE LONGITUD",
+                "Temperature" => "CONVERSION DE TEMPERATURA",
+                _ => category.ToUpper()
+            };
 
+            string[] units = category switch
+            {
+                "Mass" => _massUnits,
+                "Length" => _lengthUnits,
+                "Temperature" => _tempUnits,
+                _ => Array.Empty<string>()
+            };
+
+            PrintSubHeader(title);
             double value = ReadValidatedDouble("Ingrese valor: ");
-            string fromUnit = ReadUnitFromMenu(_massUnits, "unidad de ORIGEN");
-            string toUnit = ReadUnitFromMenu(_massUnits, "unidad de DESTINO");
+            string fromUnit = ReadUnitFromMenu(units, "unidad de ORIGEN");
+            string toUnit = ReadUnitFromMenu(units, "unidad de DESTINO");
 
-            await ExecuteConversionAsync("Mass", value, fromUnit, toUnit);
-        }
+            Console.WriteLine("\n  Conectando con el servidor VPS...");
 
-        private async Task ProcessLengthConversionAsync()
-        {
-            PrintSubHeader("CONVERSION DE LONGITUD");
+            try
+            {
+                ConversionResult result = category switch
+                {
+                    "Mass" => await _controller.ConvertMassAsync(value, fromUnit, toUnit),
+                    "Length" => await _controller.ConvertLengthAsync(value, fromUnit, toUnit),
+                    "Temperature" => await _controller.ConvertTemperatureAsync(value, fromUnit, toUnit),
+                    _ => throw new ArgumentException("Categoría inválida")
+                };
 
-            double value = ReadValidatedDouble("Ingrese valor: ");
-            string fromUnit = ReadUnitFromMenu(_lengthUnits, "unidad de ORIGEN");
-            string toUnit = ReadUnitFromMenu(_lengthUnits, "unidad de DESTINO");
+                PrintResult(result);
+            }
+            catch (Exception ex)
+            {
+                PrintError($"\n  [Error]: {ex.Message}");
+            }
 
-            await ExecuteConversionAsync("Length", value, fromUnit, toUnit);
-        }
-
-        private async Task ProcessTemperatureConversionAsync()
-        {
-            PrintSubHeader("CONVERSION DE TEMPERATURA");
-
-            double value = ReadValidatedDouble("Ingrese valor: ");
-            string fromUnit = ReadUnitFromMenu(_tempUnits, "unidad de ORIGEN");
-            string toUnit = ReadUnitFromMenu(_tempUnits, "unidad de DESTINO");
-
-            await ExecuteConversionAsync("Temperature", value, fromUnit, toUnit);
+            Console.WriteLine("\n  Presione ENTER para continuar...");
+            Console.ReadLine();
         }
 
         private string ReadUnitFromMenu(string[] units, string label)
         {
-            Console.WriteLine($"\nSeleccione {label} (flechas ↑↓ + ENTER):");
-            int selection = ConsoleHelper.ShowSelectionMenu(units);
-
-            if (selection >= 0)
+            Console.WriteLine($"\n  Seleccione {label} (↑↓ + ENTER):");
+            int sel = ConsoleHelper.ShowSelectionMenu(units);
+            if (sel >= 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"  Seleccionado: {units[selection]}");
+                Console.WriteLine($"  Seleccionado: {units[sel]}");
                 Console.ResetColor();
-                return units[selection];
+                return units[sel];
             }
-
             Console.Write("  Escriba manualmente: ");
-            string input = Console.ReadLine()?.Trim().ToUpper() ?? "";
-            return input;
+            return Console.ReadLine()?.Trim().ToUpper() ?? "";
         }
 
         private double ReadValidatedDouble(string prompt)
         {
             while (true)
             {
-                Console.Write(prompt);
+                Console.Write($"  {prompt}");
                 string input = Console.ReadLine()?.Trim() ?? "";
-
-                if (string.IsNullOrEmpty(input))
-                {
-                    PrintWarning("No puede estar vacio. Intente de nuevo.");
-                    continue;
-                }
-
-                if (!double.TryParse(input, out double value))
-                {
-                    PrintWarning("Ingrese un numero valido.");
-                    continue;
-                }
-
-                if (value < 0)
-                {
-                    PrintWarning("Solo valores positivos.");
-                    continue;
-                }
-
-                return value;
+                if (string.IsNullOrEmpty(input)) { PrintWarning("No puede estar vacío."); continue; }
+                if (!double.TryParse(input, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out double v))
+                { PrintWarning("Ingrese un número válido."); continue; }
+                if (v < 0) { PrintWarning("Solo valores positivos."); continue; }
+                return v;
             }
         }
 
-        private async Task ExecuteConversionAsync(string category, double value, string fromUnit, string toUnit)
+        private void PrintResult(ConversionResult r)
         {
-            Console.WriteLine("\nConectando con el servidor SOAP...");
-
-            try
-            {
-                var response = await _invoker.InvokeConversionAsync(category, value, fromUnit, toUnit);
-
-                PrintSuccess($"\n========== RESULTADO ==========");
-                PrintSuccess($"  Categoria: {response.Category}");
-                PrintSuccess($"  {response.InputValue} {response.FromUnit}");
-                PrintSuccess($"         = {response.ResultValue:F6} {response.ToUnit}");
-                PrintSuccess($"==============================");
-            }
-            catch (Exception ex)
-            {
-                PrintError($"\n[Error]: {ex.Message}");
-            }
-
-            Console.WriteLine("\nPresione ENTER para continuar...");
-            Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n  ╔══════════════════════════════════════╗");
+            Console.WriteLine($"  ║  Categoría : {r.Category,-24}║");
+            Console.WriteLine($"  ║  Origen    : {r.InputValue,10:F4} {r.FromUnit,-13}║");
+            Console.WriteLine($"  ║  Resultado : {r.ResultValue,10:F6} {r.ToUnit,-13}║");
+            Console.WriteLine("  ╚══════════════════════════════════════╝");
+            Console.ResetColor();
         }
 
         private void PrintBanner()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("╔════════════════════════════════════════╗");
-            Console.WriteLine("║   SISTEMA DE CONVERSION UNIVERSAL    ║");
-            Console.WriteLine("║         Cliente SOAP .NET            ║");
-            Console.WriteLine("╚════════════════════════════════════════╝");
+            Console.WriteLine("  ╔════════════════════════════════════════╗");
+            Console.WriteLine("  ║    SISTEMA DE CONVERSION UNIVERSAL    ║");
+            Console.WriteLine("  ║          Cliente SOAP .NET            ║");
+            Console.WriteLine("  ╚════════════════════════════════════════╝");
             Console.ResetColor();
         }
 
-        private void PrintSubHeader(string title)
+        private void PrintSubHeader(string t)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"--- {title} ---");
+            Console.WriteLine($"  ── {t} ──");
             Console.ResetColor();
         }
 
-        private void PrintWarning(string message)
+        private void PrintWarning(string m)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"  ⚠ {message}");
+            Console.WriteLine($"  ⚠  {m}");
             Console.ResetColor();
         }
 
-        private void PrintError(string message)
+        private void PrintError(string m)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
-        }
-
-        private void PrintSuccess(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message);
+            Console.WriteLine(m);
             Console.ResetColor();
         }
 
@@ -193,9 +171,9 @@ namespace ConsoleClient
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("╔════════════════════════════════════════╗");
-            Console.WriteLine("║     ¡Gracias por usar el sistema!    ║");
-            Console.WriteLine("╚════════════════════════════════════════╝");
+            Console.WriteLine("  ╔════════════════════════════════════════╗");
+            Console.WriteLine("  ║      ¡Hasta luego! Bye, MONSTER.      ║");
+            Console.WriteLine("  ╚════════════════════════════════════════╝");
             Console.ResetColor();
         }
     }

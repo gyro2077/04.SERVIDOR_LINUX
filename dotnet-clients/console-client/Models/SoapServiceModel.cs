@@ -105,12 +105,14 @@ namespace ConsoleClient.Models
                     case "fromunit":    result.FromUnit    = child.InnerText; break;
                     case "tounit":      result.ToUnit      = child.InnerText; break;
                     case "inputvalue":
-                        double.TryParse(child.InnerText, NumberStyles.Any,
-                            CultureInfo.InvariantCulture, out result.InputValue);
+                        if (double.TryParse(child.InnerText, NumberStyles.Any,
+                            CultureInfo.InvariantCulture, out double inVal))
+                            result.InputValue = inVal;
                         break;
                     case "resultvalue":
-                        double.TryParse(child.InnerText, NumberStyles.Any,
-                            CultureInfo.InvariantCulture, out result.ResultValue);
+                        if (double.TryParse(child.InnerText, NumberStyles.Any,
+                            CultureInfo.InvariantCulture, out double outVal))
+                            result.ResultValue = outVal;
                         break;
                     case "message":     result.Message     = child.InnerText; break;
                 }
