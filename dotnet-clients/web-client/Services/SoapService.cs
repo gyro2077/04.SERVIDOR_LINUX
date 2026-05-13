@@ -1,9 +1,7 @@
+using System.Globalization;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.Extensions.Options;
-using web_client.Configuration;
 
 namespace web_client.Services
 {
@@ -21,40 +19,42 @@ namespace web_client.Services
 
     public class SoapService : ISoapService
     {
-        private readonly HttpClient _httpClient;
-        private readonly SoapServiceConfig _config;
+        private const string VPS_ENDPOINT = "http://209.145.48.25:8081/ROOT/Conversion";
+        private const string SOAP_NAMESPACE = "http://ws.grupo3.edu.ec/";
+        private const string SESSION_TOKEN = "TU9OU1RFUjoxNzc4Njc3MDM0ODMy";
 
-        public SoapService(HttpClient httpClient, IOptions<SoapServiceConfig> config)
+        private readonly HttpClient _httpClient;
+
+        public SoapService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _config = config.Value;
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
         public async Task<SoapResponse> InvokeConversionAsync(string category, double value, string fromUnit, string toUnit)
         {
             try
             {
-                string endpointAddress = _config.EndpointAddress;
-                string soapAction = $"{_config.SoapNamespace}ConversionService/convert{category}";
-                string methodName = $"convert{category}";
+                string operation = $"convert{category}";
+                string valueStr = value.ToString(CultureInfo.InvariantCulture);
 
-                string xmlRequest = $@"<?xml version=""1.0"" encoding=""utf-8""?>
-<soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
-  <soap:Body>
-    <{methodName} xmlns=""{_config.SoapNamespace}"">
-      <value>{value}</value>
-      <fromUnit>{fromUnit}</fromUnit>
-      <toUnit>{toUnit}</toUnit>
-    </{methodName}>
-  </soap:Body>
+                string soapBody = $@"<?xml version=""1.0"" encoding=""UTF-8""?>
+<soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:con=""{SOAP_NAMESPACE}"">
+   <soap:Body>
+      <con:{operation}>
+         <token>{SESSION_TOKEN}</token>
+         <value>{valueStr}</value>
+         <fromUnit>{fromUnit}</fromUnit>
+         <toUnit>{toUnit}</toUnit>
+      </con:{operation}>
+   </soap:Body>
 </soap:Envelope>";
 
-                var httpContent = new StringContent(xmlRequest, Encoding.UTF8, "text/xml");
-                httpContent.Headers.Remove("Content-Type");
-                httpContent.Headers.Add("Content-Type", "text/xml; charset=utf-8");
-                httpContent.Headers.Add("SOAPAction", $"\"{soapAction}\"");
+                var content = new StringContent(soapBody, Encoding.UTF8, "text/xml");
+                content.Headers.Remove("Content-Type");
+                content.Headers.TryAddWithoutValidation("Content-Type", "text/xml; charset=UTF-8");
 
-                var response = await _httpClient.PostAsync(endpointAddress, httpContent);
+                var response = await _httpClient.PostAsync(VPS_ENDPOINT, content);
                 string xmlResponse = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -62,77 +62,74 @@ namespace web_client.Services
                     return new SoapResponse
                     {
                         Success = false,
-                        ErrorMessage = $"Error HTTP: {response.StatusCode}"
+                        ErrorMessage = $"El servidor devolvió HTTP {(int)response.StatusCode}. Respuesta: {xmlResponse}"
                     };
                 }
 
-                double resultValue = ParseSoapResponse(xmlResponse);
-                return new SoapResponse
-                {
-                    Success = true,
-                    ResultValue = resultValue
-                };
+                double result = ParseResultValue(xmlResponse);
+                return new SoapResponse { Success = true, ResultValue = result };
             }
             catch (HttpRequestException ex)
             {
-                return new SoapResponse
-                {
-                    Success = false,
-                    ErrorMessage = $"No se pudo conectar al servidor SOAP. Verifique que el servicio este activo. ({ex.Message})"
-                };
+                return new SoapResponse { Success = false, ErrorMessage = $"Sin conexión al servidor VPS. Verifique la red. ({ex.Message})" };
             }
             catch (TaskCanceledException)
             {
-                return new SoapResponse
-                {
-                    Success = false,
-                    ErrorMessage = "Tiempo de espera agotado. El servidor no responde."
-                };
+                return new SoapResponse { Success = false, ErrorMessage = "Tiempo de espera agotado (30 s). El servidor no responde." };
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new SoapResponse { Success = false, ErrorMessage = $"Respuesta SOAP inesperada: {ex.Message}" };
             }
             catch (Exception ex)
             {
-                return new SoapResponse
-                {
-                    Success = false,
-                    ErrorMessage = $"Error al procesar la respuesta: {ex.Message}"
-                };
+                return new SoapResponse { Success = false, ErrorMessage = $"Error interno: {ex.Message}" };
             }
         }
 
-        private double ParseSoapResponse(string xmlResponse)
+        private static double ParseResultValue(string xmlResponse)
         {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlResponse);
+            var doc = new XmlDocument();
+            doc.LoadXml(xmlResponse);
 
-            var nsManager = new XmlNamespaceManager(xmlDoc.NameTable);
-            nsManager.AddNamespace("soap", "http://schemas.xmlsoap.org/soap/envelope/");
+            XmlNode? body = FindNodeByLocalName(doc.DocumentElement!, "Body");
+            if (body == null)
+                throw new InvalidOperationException("No se encontró <Body> en la respuesta.");
 
-            var responseNode = xmlDoc.SelectSingleNode("//soap:Body/*", nsManager);
-
+            XmlNode? responseNode = body.FirstChild;
             if (responseNode == null)
+                throw new InvalidOperationException("La respuesta SOAP está vacía.");
+
+            if (responseNode.LocalName == "Fault")
             {
-                throw new InvalidOperationException("Respuesta SOAP invalida.");
+                string faultMsg = responseNode.InnerText;
+                throw new InvalidOperationException($"SOAP Fault: {faultMsg}");
             }
 
-            var conversionNode = responseNode.FirstChild;
+            XmlNode? returnNode = FindNodeByLocalName(responseNode, "return");
+            if (returnNode == null)
+                throw new InvalidOperationException("No se encontró <return> en la respuesta.");
 
-            if (conversionNode == null)
+            XmlNode? resultNode = FindNodeByLocalName(returnNode, "resultValue");
+            if (resultNode == null)
+                throw new InvalidOperationException("No se encontró <resultValue> en la respuesta.");
+
+            if (!double.TryParse(resultNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
             {
-                throw new InvalidOperationException("Respuesta SOAP invalida.");
+                throw new InvalidOperationException($"El valor '{resultNode.InnerText}' no es un número válido.");
             }
 
-            foreach (XmlNode child in conversionNode.ChildNodes)
-            {
-                if (child.LocalName == "resultValue" || child.LocalName == "ResultValue")
-                {
-                    if (double.TryParse(child.InnerText, out double result))
-                    {
-                        return result;
-                    }
-                }
-            }
+            return result;
+        }
 
-            throw new InvalidOperationException("No se encontro el valor de resultado en la respuesta.");
+        private static XmlNode? FindNodeByLocalName(XmlNode parent, string localName)
+        {
+            foreach (XmlNode child in parent.ChildNodes)
+            {
+                if (child.LocalName == localName)
+                    return child;
+            }
+            return null;
         }
     }
 }

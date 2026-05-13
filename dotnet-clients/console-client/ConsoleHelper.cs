@@ -1,13 +1,9 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace ConsoleClient
 {
     public static class ConsoleHelper
     {
-        [DllImport("kernel32.dll", ExactSpelling = true)]
-        private static extern IntPtr GetConsoleWindow();
-
         public static void ClearLine()
         {
             Console.SetCursorPosition(0, Console.CursorTop);
@@ -32,12 +28,12 @@ namespace ConsoleClient
                     {
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.Write($"  {options[i]}  ");
+                        Console.Write($"  ► {options[i]}  ");
                         Console.ResetColor();
                     }
                     else
                     {
-                        Console.Write($"  {options[i]}  ");
+                        Console.Write($"    {options[i]}  ");
                     }
                 }
 
@@ -81,13 +77,13 @@ namespace ConsoleClient
 
         public static string ShowUnitSelection(string[] units)
         {
-            Console.WriteLine("\nSeleccione unidad con flechas ↑↓ y presione ENTER:");
+            Console.WriteLine("\nSeleccione unidad con ↑↓ y ENTER:");
             int selection = ShowSelectionMenu(units);
             if (selection >= 0)
             {
                 return units[selection];
             }
-            Console.Write("O escriba la unidad manualmente: ");
+            Console.Write("O escriba manualmente: ");
             string input = Console.ReadLine()?.Trim().ToUpper() ?? "";
             return input;
         }

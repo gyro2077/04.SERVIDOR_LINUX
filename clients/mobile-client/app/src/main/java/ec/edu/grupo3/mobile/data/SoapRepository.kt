@@ -12,116 +12,120 @@ import java.io.StringReader
 import java.util.concurrent.TimeUnit
 
 class SoapRepository {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .build()
 
-    // IMPORTANTE: Cambia esta IP por la IP REAL de tu máquina en la red local
-    // Para emulador Android: usa 10.0.2.2 (equivale a localhost del host)
-    // Para dispositivo físico: usa la IP de tu PC (ej: 192.168.100.171)
-    // Para obtener tu IP: ejecuta 'hostname -I' en tu terminal
-    private var baseUrl = "http://192.168.100.171:8080/04.SERVIDOR/conversion"
+    companion object {
+        private const val BASE_URL = "http://209.145.48.25:8081/ROOT/Conversion"
 
-    private val namespace = "http://ws.grupo3.edu.ec/"
+        private const val SESSION_TOKEN = "TU9OU1RFUjoxNzc4Njc3MDM0ODMy"
 
-    fun updateBaseUrl(newIp: String) {
-        baseUrl = "http://$newIp:8080/04.SERVIDOR/conversion"
+        private const val SOAP_NS = "http://ws.grupo3.edu.ec/"
+
+        private const val CONNECT_TIMEOUT_SEC = 15L
+        private const val READ_TIMEOUT_SEC    = 30L
     }
 
-    suspend fun convert(category: String, value: Double, fromUnit: String, toUnit: String): Result<ConversionResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val methodName = "convert$category"
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS)
+        .readTimeout(READ_TIMEOUT_SEC, TimeUnit.SECONDS)
+        .build()
 
-                // Envelope SOAP 1.1 CORREGIDO para JAX-WS/Payara
-                // Los parámetros NO llevan prefijo de namespace, solo el elemento raíz
-                val soapEnvelope = """<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:ns="$namespace">
-  <soap:Body>
-    <ns:$methodName>
-      <value>$value</value>
-      <fromUnit>$fromUnit</fromUnit>
-      <toUnit>$toUnit</toUnit>
-    </ns:$methodName>
-  </soap:Body>
-</soap:Envelope>"""
+    suspend fun convert(
+        category: String,
+        value: Double,
+        fromUnit: String,
+        toUnit: String
+    ): Result<ConversionResponse> = withContext(Dispatchers.IO) {
+        try {
+            val methodName = "convert${category.replaceFirstChar { it.uppercase() }}"
 
-                val requestBody = soapEnvelope.toRequestBody("text/xml; charset=utf-8".toMediaType())
+            val soapEnvelope = buildSoapEnvelope(methodName, value, fromUnit, toUnit)
 
-                // SOAPAction con el namespace completo
-                val soapAction = "$namespace$methodName"
+            val requestBody = soapEnvelope
+                .toRequestBody("text/xml; charset=UTF-8".toMediaType())
 
-                val request = Request.Builder()
-                    .url(baseUrl)
-                    .post(requestBody)
-                    .addHeader("Content-Type", "text/xml; charset=utf-8")
-                    .addHeader("SOAPAction", soapAction)
-                    .build()
+            val request = Request.Builder()
+                .url(BASE_URL)
+                .post(requestBody)
+                .addHeader("Content-Type", "text/xml; charset=UTF-8")
+                .build()
 
-                client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        val errorBody = response.body?.string() ?: "Sin detalles"
-                        throw Exception("HTTP ${response.code}: $errorBody")
-                    }
+            client.newCall(request).execute().use { response ->
+                val bodyStr = response.body?.string()
+                    ?: throw Exception("Cuerpo de respuesta vacío del servidor.")
 
-                    val responseBody = response.body?.string() ?: throw Exception("Respuesta vacía")
-                    val result = parseSoapResponse(responseBody)
-                    Result.success(result)
+                if (!response.isSuccessful) {
+                    throw Exception("Error del servidor [${response.code}]: $bodyStr")
                 }
-            } catch (e: Exception) {
-                Result.failure(e)
+
+                Result.success(parseSoapResponse(bodyStr))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
+    private fun buildSoapEnvelope(
+        methodName: String,
+        value: Double,
+        fromUnit: String,
+        toUnit: String
+    ): String = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soap:Envelope
+            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+            xmlns:con="$SOAP_NS">
+          <soap:Body>
+            <con:$methodName>
+              <token>$SESSION_TOKEN</token>
+              <value>$value</value>
+              <fromUnit>$fromUnit</fromUnit>
+              <toUnit>$toUnit</toUnit>
+            </con:$methodName>
+          </soap:Body>
+        </soap:Envelope>
+    """.trimIndent()
+
     private fun parseSoapResponse(xml: String): ConversionResponse {
-        val factory = XmlPullParserFactory.newInstance()
-        factory.isNamespaceAware = true
+        val factory = XmlPullParserFactory.newInstance().apply {
+            isNamespaceAware = true
+        }
         val xpp = factory.newPullParser()
         xpp.setInput(StringReader(xml))
 
-        var eventType = xpp.eventType
         var currentTag = ""
-        var inReturn = false
+        var category   = ""
+        var fromUnit   = ""
+        var toUnit     = ""
+        var inputVal   = 0.0
+        var resultVal  = 0.0
+        var message    = ""
 
-        var cat = ""
-        var from = ""
-        var to = ""
-        var inputVal = 0.0
-        var resultVal = 0.0
-
+        var eventType = xpp.eventType
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
-                XmlPullParser.START_TAG -> {
-                    currentTag = xpp.name
-                    if (currentTag == "return") {
-                        inReturn = true
-                    }
-                }
+                XmlPullParser.START_TAG -> currentTag = xpp.name ?: ""
                 XmlPullParser.TEXT -> {
                     val text = xpp.text.trim()
-                    if (text.isNotEmpty() && inReturn) {
+                    if (text.isNotEmpty()) {
                         when (currentTag) {
-                            "category" -> cat = text
-                            "fromUnit" -> from = text
-                            "toUnit" -> to = text
-                            "inputValue" -> inputVal = text.toDoubleOrNull() ?: 0.0
-                            "resultValue" -> resultVal = text.toDoubleOrNull() ?: 0.0
+                            "category"   -> category  = text
+                            "fromUnit"   -> fromUnit   = text
+                            "toUnit"     -> toUnit     = text
+                            "inputValue" -> inputVal   = text.toDoubleOrNull() ?: 0.0
+                            "resultValue"-> resultVal  = text.toDoubleOrNull() ?: 0.0
+                            "message"    -> message    = text
                         }
                     }
                 }
-                XmlPullParser.END_TAG -> {
-                    if (xpp.name == "return") {
-                        inReturn = false
-                    }
-                    currentTag = ""
-                }
+                XmlPullParser.END_TAG -> currentTag = ""
             }
             eventType = xpp.next()
         }
 
-        return ConversionResponse(cat, from, to, inputVal, resultVal)
+        if (category.isEmpty() && resultVal == 0.0) {
+            throw Exception("Respuesta SOAP inesperada del servidor. Verifique el token o el endpoint.")
+        }
+
+        return ConversionResponse(category, fromUnit, toUnit, inputVal, resultVal, message)
     }
 }

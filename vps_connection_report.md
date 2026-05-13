@@ -19,36 +19,6 @@ Ambos servicios web (`Login` y `Conversion`) se encuentran plenamente accesibles
 ### 1. Servicio de Autenticación (`/Login`)
 Se envió una petición de inicio de sesión con las credenciales oficiales (`MONSTER` / `MONSTER9`).
 
-**Petición enviada:**
-```bash
-curl -s -X POST "http://209.145.48.25:8081/ROOT/Login" \
-  -H "Content-Type: text/xml; charset=UTF-8" \
-  -d '<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:log="http://ws.grupo3.edu.ec/">
-   <soap:Body>
-      <log:login>
-         <username>MONSTER</username>
-         <password>MONSTER9</password>
-      </log:login>
-   </soap:Body>
-</soap:Envelope>'
-```
-
-**Respuesta recibida del VPS:**
-```xml
-<?xml version='1.0' encoding='UTF-8'?>
-<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
-   <S:Body>
-      <ns2:loginResponse xmlns:ns2="http://ws.grupo3.edu.ec/">
-         <return>
-            <success>true</success>
-            <token>TU9OU1RFUjoxNzc4Njc3MDM0ODMy</token>
-            <message>Login exitoso</message>
-         </return>
-      </ns2:loginResponse>
-   </S:Body>
-</S:Envelope>
-```
 * **Resultado:** El servidor validó las credenciales exitosamente y generó el token de autenticación válido.
 
 ---
